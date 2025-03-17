@@ -30,7 +30,7 @@ git clone https://github.com/sherrif001/CodeAlpha_FAQ_Chatbot
 
 ### 2️⃣ Navigate to the Project Directory
 ```sh
-cd faq-chatbot
+cd CodeAlpha_FAQ_Chatbot
 ```
 
 ### 3️⃣ Install Required Dependencies
@@ -40,7 +40,7 @@ pip install -r requirements.txt
 
 ### 4️⃣ Run the Chatbot
 ```sh
-python chatbot.py
+python faq_chatbot.py
 ```
 
 ---
