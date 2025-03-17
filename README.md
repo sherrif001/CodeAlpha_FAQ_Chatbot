@@ -25,7 +25,7 @@ A simple yet effective **FAQ Chatbot** built using **Python, Tkinter, and NLP (T
 
 ### 1️⃣ Clone the Repository
 ```sh
-git clone https://github.com/sherrif001/faq_chatbot.git
+git clone https://github.com/sherrif001/CodeAlpha_FAQ_Chatbot
 ```
 
 ### 2️⃣ Navigate to the Project Directory
