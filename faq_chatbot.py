@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import scrolledtext
+import speech_recognition as sr
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -7,7 +8,27 @@ import numpy as np
 
 nltk.download('punkt')
 
-#this faq data (you can edit it as you wish :) )
+# Voice Recognition Class
+class VoiceRecognizer:
+    def __init__(self):
+        self.recognizer = sr.Recognizer()
+
+    def start_listening(self):
+        with sr.Microphone() as source:
+            print("Listening...")
+            try:
+                audio = self.recognizer.listen(source)
+                text = self.recognizer.recognize_google(audio)
+                user_input.insert(tk.END, text)  # Insert recognized text into input box
+            except sr.UnknownValueError:
+                chat_output.insert(tk.END, "Bot: Sorry, I couldn't understand. Try again.\n\n", "bot")
+            except sr.RequestError:
+                chat_output.insert(tk.END, "Bot: Could not connect to recognition service.\n\n", "bot")
+
+# Initialize Voice Recognition
+voice_recognizer = VoiceRecognizer()
+
+# FAQ Data
 faq_data = {
     "What are your business hours?": "We are open from 9 AM to 5 PM, Monday to Friday.",
     "What is your return policy?": "You can return items within 30 days of purchase with a receipt.",
@@ -30,6 +51,7 @@ faq_data = {
     "What is your refund policy?": "We provide full refunds within 30 days of purchase if the item is in its original condition."
 }
 
+
 questions = list(faq_data.keys())
 answers = list(faq_data.values())
 
@@ -42,7 +64,7 @@ def get_best_match(user_input):
     best_match_index = np.argmax(similarities)
     best_score = similarities[best_match_index]
     
-    if best_score > 0.2:  
+    if best_score > 0.2:
         return questions[best_match_index]
     else:
         return None
@@ -53,10 +75,7 @@ def chatbot_response(event=None):
         return
     
     best_match = get_best_match(user_question)
-    if best_match:
-        response = faq_data[best_match]
-    else:
-        response = "Sorry, I couldn't find an exact match. Please try rephrasing."
+    response = faq_data.get(best_match, "Sorry, I couldn't find an exact match. Please try rephrasing.")
     
     chat_output.insert(tk.END, f"You: {user_question}\n", "user")
     chat_output.insert(tk.END, f"Bot: {response}\n\n", "bot")
@@ -65,7 +84,7 @@ def chatbot_response(event=None):
 def clear_chat():
     chat_output.delete("1.0", tk.END)
 
-# (this code is for GUI if u wanna edit the app looks :) )
+# GUI Setup
 root = tk.Tk()
 root.title("FAQ Chatbot")
 root.geometry("600x400")
@@ -85,5 +104,8 @@ button_frame.pack()
 
 tk.Button(button_frame, text="Send", command=chatbot_response, bg="#4CAF50", fg="white", font=("Arial", 12)).pack(side="left", padx=5)
 tk.Button(button_frame, text="Clear", command=clear_chat, bg="#D32F2F", fg="white", font=("Arial", 12)).pack(side="left", padx=5)
+
+speak_button = tk.Button(button_frame, text="🎙️ Speak", command=voice_recognizer.start_listening, bg="#FFA500", fg="white", font=("Arial", 12))
+speak_button.pack(side="left", padx=5)
 
 root.mainloop()
